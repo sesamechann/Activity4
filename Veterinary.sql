@@ -1,5 +1,8 @@
+-- feat/create-database-veterinary
 CREATE DATABASE veterinary;
 
+
+-- feat/create-table-owners
 CREATE TABLE owners(
 	ownerid INT PRIMARY KEY,
 	ofirstname VARCHAR(50) NOT NULL,
@@ -9,6 +12,7 @@ CREATE TABLE owners(
 	phone VARCHAR(50) NOT NULL
 );
 
+-- feat/create-table-animals
 CREATE TABLE animals(
 	animalid INT PRIMARY KEY,
 	name VARCHAR(50) NOT NULL,
@@ -21,6 +25,7 @@ CREATE TABLE animals(
 	foreign key (ownerid) references owners(ownerid)
 );
 
+-- feat/create-table-appointments
 CREATE TABLE appointments(
 	appointid INT PRIMARY KEY,
 	appointdate DATE,
@@ -29,15 +34,17 @@ CREATE TABLE appointments(
 	foreign key (animalid) references animals(animalid)
 );
 
+-- feat/create-table-doctors
 CREATE TABLE doctors(
 	doctorid INT PRIMARY KEY,
 	dfirstname VARCHAR(50) NOT NULL,
 	dlastname VARCHAR(50) NOT NULL,
-	speciality VARCHAR(100) NOT NULL,
+	specialty VARCHAR(100) NOT NULL,
 	phone VARCHAR(15) NOT NULL,
 	email VARCHAR(100) NOT NULL
 );
 
+-- feat/create-table-invoices
 CREATE TABLE invoices(
 	invoiceid INT PRIMARY KEY,
 	paymentdate TIME,
@@ -46,6 +53,7 @@ CREATE TABLE invoices(
 	foreign key (appointid) references appointments(appointid)
 );
 
+-- feat/create-table-medicalrecords
 CREATE TABLE medicalrecords(
 	recordid INT PRIMARY KEY,
 	recorddate TIMESTAMP,
@@ -58,6 +66,8 @@ CREATE TABLE medicalrecords(
 	foreign key (doctorid) references doctors(doctorid)
 );
 
+
+-- feat/insert-10-rows-owners
 INSERT INTO owners (ownerid, ofirstname, olastname, address, phone, email)
 VALUES
     (1, 'Juan', 'Dela Cruz', '123 Main St, Manila', '123-456-7890', 'juan@example.com'),
@@ -70,7 +80,8 @@ VALUES
     (8, 'Carmen', 'Fernandez', '222 Birch St, Taguig', '333-222-1111', 'carmen@example.com'),
     (9, 'Pedro', 'Santillian', '888 Spruce St, Bacolod', '888-777-3333', 'pedro@example.com'),
     (10, 'Sofia', 'Villianueva', '777 Walnut St, Iloilo', '111-999-3333', 'sofia@example.com');
-    
+
+-- feat/insert-10-rows-animals
 INSERT INTO animals (animalid, name, species, breed, dateofbirth, gender, color, ownerid)
 VALUES
 (1, 'Fido', 'Dog', 'Golden Retriever', '2018-03-15', 'Male', 'Golden', 1),
@@ -84,6 +95,7 @@ VALUES
 (9, 'Max', 'Dog', 'Dachshund', '2020-07-14', 'Male', 'Black and Tan', 9),
 (10,'Cleo', 'Cat', 'Ragdoll', '2019-12-22', 'Female', 'Seal Point', 10);
 
+-- feat/insert-10-rows-appointments
 INSERT INTO appointments (appointid, animalid, appointdate, reason)
 VALUES
 (1, 1, '2023-01-05', 'Annual check-up'),
@@ -92,11 +104,12 @@ VALUES
 (4, 4, '2023-02-15', 'Dental cleaning'),
 (5, 5, '2023-03-05', 'Skin condition'),
 (6, 6, '2023-03-10', 'Check for fleas'),
-(7, 2, '2023-04-12', 'Vaccination'),
+(7, 7, '2023-04-12', 'Vaccination'),
 (8, 8, '2023-04-18', 'Spaying/neutering'),
 (9, 9, '2023-05-02', 'Allergy treatment'),
 (10,10, '2023-05-20', 'Eye infection');
 
+-- feat/insert-10-rows-doctors
 INSERT INTO doctors(doctorid, dfirstname, dlastname, specialty, phone, email)
 VALUES
 (1, 'Dr.Maria', 'Santos', 'General Veterinarian', '987-654-3210', 'maria@example.com'),
@@ -106,6 +119,7 @@ VALUES
 (5, 'Dr.Luis', 'Torres', 'Surgery Specialist', '123-555-7777', 'luis@example.com'),
 (6, 'Dr.Carmen', 'Fernandez', 'Opthalmology Specialist', '333-222-1111', 'carmen@example.com');
 
+-- feat/insert-10-rows-invoices
 INSERT INTO invoices(invoiceid, appointid, totalamount, paymentdate)
 VALUES
 (1, 1, 50.00, '09:30:00'),
@@ -119,6 +133,7 @@ VALUES
 (9, 9, 60.00, '14:45:00'),
 (10, 10, 40.00, '11:30:00');
 
+-- feat/insert-10-rows-medicalrecords
 INSERT INTO medicalrecords (recordid, animalid, recorddate, doctorid, diagnosis, prescription, notes)
 VALUES 
     (1, 1, '2023-01-05 00:00:00', 1, 'Health check', 'N/A', 'Regular checkup, no issue detected'),
@@ -132,13 +147,15 @@ VALUES
     (9, 9, '2023-05-02 00:00:00', 4, 'Allergic reaction', 'Antihistamines', 'Allergic reaction due to food prescribed antihistamine'),
     (10, 10, '2023-05-20 00:00:00', 6, 'Conjunctivitis', 'Eye drops', 'Prescribed eye drops for conjunctivitis');
 
-
+-- feat/add-column-registereddate
 ALTER TABLE owners
 ADD COLUMN registereddate DATE;
 
+-- feat/rename-column-paymenttime
 ALTER TABLE invoices
 RENAME COLUMN paymentdate TO paymenttime;
 
+-- feat/remove-appointment-simba
 DELETE FROM invoices
 WHERE appointid = (
 	SELECT appointid 
@@ -152,17 +169,20 @@ WHERE animalid = (
 	SELECT animalid 
 	FROM animals WHERE name = 'Simba');
 
-	UPDATE doctors
+-- feat/modify-lastname-dr-reyes-gonzales
+UPDATE doctors
 SET dlastname = 'Reyes-Gonzales'
 WHERE dfirstname = 'Dr. Sofia';
 
-
+-- feat/list-species-catered
 SELECT DISTINCT species
 FROM animals;
 
+-- feat/list-total-sales
 SELECT SUM(totalamount) AS total_sales
 FROM invoices;
 
+-- feat/list-total-appoinment-owner-maria
 SELECT COUNT(*) AS total_appointments
 FROM appointments
 WHERE animalid IN (
@@ -175,6 +195,7 @@ WHERE animalid IN (
     )
 );
 
+-- feat/list-animal-w-most-appoinment
 SELECT a.animalid, a.name, COUNT(*) AS appointment_count
 FROM animals a
 JOIN appointments ap 
