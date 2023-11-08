@@ -7,3 +7,4 @@ CREATE TABLE owners(
 	email VARCHAR(100) NOT NULL
 );
 
+
